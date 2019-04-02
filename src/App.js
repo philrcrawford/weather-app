@@ -12,6 +12,7 @@ class App extends Component {
     country: undefined,
     humidity: undefined,
     description: undefined,
+    units: undefined,
     error: undefined
   };
 
@@ -19,8 +20,16 @@ class App extends Component {
     e.preventDefault();
     const city = e.target.elements.city.value;
     const country = e.target.elements.country.value;
+    let units = e.target.elements.units.value.toLowerCase();
+
+    if (units === "celcius") {
+      units = "metric";
+    } else {
+      units = "imperial";
+    }
+
     const api_call = await fetch(
-      `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&APPID=${API_KEY}&units=metric`
+      `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&APPID=${API_KEY}&units=${units}`
     );
     const data = await api_call.json();
 
@@ -31,6 +40,7 @@ class App extends Component {
         country: data.sys.country,
         humidity: data.main.humidity,
         description: data.weather[0].description,
+        units: units,
         error: ""
       });
     } else {
@@ -40,6 +50,7 @@ class App extends Component {
         country: undefined,
         humidity: undefined,
         description: undefined,
+        units: undefined,
         error: "Please enter a valid city and country"
       });
     }
@@ -62,6 +73,7 @@ class App extends Component {
                   country={this.state.country}
                   humidity={this.state.humidity}
                   description={this.state.description}
+                  units={this.state.units}
                   error={this.state.error}
                 />
               </div>
